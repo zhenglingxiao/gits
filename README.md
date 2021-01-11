@@ -1,9 +1,9 @@
-### Usage: [Any Git Command] [foreach <Any Git Command>] [clone] [help]
+### Usage: [Any Git Command] [foreach \<Any Git Command\>] [clone] [help]
 
-#### gits <Any Git Command>
+#### gits \<Any Git Command\>
    Run git command for each git repo and print the first 10 lines of result.
 
-#### gits foreach <Any Git Command>
+#### gits foreach \<Any Git Command\>
    Run git command for each git repo without any limit.
 
 #### gits clone
