@@ -8,6 +8,6 @@
 
 #### gits clone
 * Read each line from .gitrepositories and pass it to 'git clone' command as arguments.  
-   The .gitrepositories like this:  
-   > git@xx.git # clone git repo  
-   > git@yy.git library/LibYY # clone git repo to target dir
+  Create your own .gitrepositories file like this in the root of your project.  
+  > git@xx.git # clone git repo  
+  > git@yy.git library/LibYY # clone git repo to target dir
