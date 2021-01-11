@@ -1,0 +1,55 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+ORANGE='\033[0;33m'
+PURPLE='\033[0;35m'
+NO_COLOR='\033[0m'
+
+# find . -maxdepth 4 -type d -name .git 查找所有 .git 目录，限制最多搜索 4 层，提高运行效率
+# sed 's/\/\.git//' 去除搜索结果末尾的 .git
+# sed 's/\.\///' 去除搜索结果开头的 ./
+git_dirs=($(find . -maxdepth 4 -type d -name .git | sed 's/\/\.git//' | sed 's/\.\///' | sort))
+
+run() {
+  echo -e "${PURPLE}${PWD##*/}/$1${NO_COLOR}"
+  git -C $@ | awk 'NR<=10 {print}'
+  echo
+  return 0
+}
+
+clone() {
+  PURPLE='\033[0;35m'
+  NO_COLOR='\033[0m'
+  echo -e "${PURPLE}$1${NO_COLOR}"
+  git clone $@
+  echo
+  return 0
+}
+
+foreach() {
+  PURPLE='\033[0;35m'
+  NO_COLOR='\033[0m'
+  echo -e "${PURPLE}${PWD##*/}/$1${NO_COLOR}"
+  git -C $@
+  echo
+  return 0
+}
+
+export -f clone
+export -f foreach
+
+if [[ $1 == "clone" ]]; then
+  # 读取 .gitrepositories 的每一行作为作为参数传给 git clone
+  cat .gitrepositories | xargs -L1 -I {} bash -c 'clone {}'
+elif [[ $1 == "foreach" ]]; then
+  # ${@:2} 表示传递除第一个参数外的其他参数
+  for git_dir in ${git_dirs[@]}; do foreach $git_dir ${@:2}; done
+elif [[ $1 == "help" ]]; then
+  echo -e "Usage: [Any Git Command] [foreach <Any Git Command>] [clone] [help]\n"
+  echo -e "gits <Any Git Command>\n   Run git command for each git repo and print the first 10 lines of result.\n"
+  echo -e "gits foreach <Any Git Command>\n   Run git command for each git repo without any limit.\n"
+  echo -e "gits clone\n   Read each line from .gitrepositories and pass it to 'git clone' command as arguments.\n   The .gitrepositories like this:\n   git@xx.git # clone git repo\n   git@yy.git library/LibYY # clone git repo to target dir\n"
+else
+  for git_dir in ${git_dirs[@]}; do run $git_dir $@; done
+fi
