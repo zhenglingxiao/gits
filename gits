@@ -31,7 +31,7 @@ foreach() {
   PURPLE='\033[0;35m'
   NO_COLOR='\033[0m'
   echo -e "${PURPLE}${PWD##*/}/$1${NO_COLOR}"
-  git -C $@
+  git -C $@ | awk '{print}'
   echo
   return 0
 }
